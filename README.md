@@ -44,6 +44,7 @@ export default ApiWrapper;
 ```
 
 Route / Parameter binding
+
 You need to wrap the controller method and do the parameter binding in order to work properly
 ```
 /**
@@ -114,4 +115,4 @@ async function tsError() {
 
 
 # License
-MIT License or ISC
+MIT License
