@@ -20,6 +20,11 @@ async function test() {
     ApiWrapper.userController.putUser({ id: usertId, user });
     var postUserRes = await ApiWrapper.userController.postUser({ name: 'new user' });
     console.log(postUserRes.data);
+
+    // car
+    var res = await ApiWrapper.carController.getCar({}, { id: 1 });
+    var car = res.data;
+    console.log(car);
 }
 
 async function tsError() {

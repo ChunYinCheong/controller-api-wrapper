@@ -2,12 +2,13 @@ import axios, { AxiosInstance, Method, AxiosResponse } from 'axios';
 
 
 export type Handler<T, U, R> = (queryOrBody?: T, routeParam?: U, other?: any) => R;
-type Controllers = { [controller: string]: { [api: string]: Handler<any, any, any> | ControllerApi<any, any, any> } }
+type Controller = { [api: string]: Handler<any, any, any> | ControllerApi<any, any, any> };
+type Controllers = { [controller: string]: Controller }
 type HandlerArgument<T extends Handler<any, any, any>> = T extends Handler<infer F, any, any> ? F : any;
 type RouteParameters<T extends Handler<any, any, any>> = T extends Handler<any, infer F, any> ? F : any;
 export type ControllerApi<T, U, R> = {
     url: string,
-    method: Method,
+    method: Method | string,
     handler: Handler<T, U, R>,
     validator?: (queryOrBody?: T, routeParam?: U) => any
 }
@@ -105,7 +106,7 @@ function AxiosWrap<T, U, R>(api: ControllerApi<T, U, R>, axiosInstance: AxiosIns
             url = url.replace(':' + value, routeParam[value]);
         });
         var config = {
-            method: api.method,
+            method: api.method as Method,
             url: api.url,
             params: api.method === 'get' ? args : undefined,
             data: api.method !== 'get' ? args : undefined
