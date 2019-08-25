@@ -3,7 +3,7 @@ import userController from './UserController';
 import productController from './ProductController';
 import { wrapControllers } from '../../index';
 
-const controllers = {
+export const controllers = {
     userController,
     productController
 }

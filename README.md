@@ -35,7 +35,7 @@ import userController from './UserController';
 import productController from './ProductController';
 import { wrapControllers } from '../../index';
 
-const controllers = {
+export const controllers = {
     userController,
     productController
 }
@@ -47,27 +47,92 @@ Route / Parameter binding
 
 You need to wrap the controller method and do the parameter binding in order to work properly
 ```
-/**
-   * @deprecated This is NOT tested and only for demo purpose
-   */
-export function wrapHandlerByRequestResponse(handler: Handler<any, any, any>) {
-    return (request, response) => {
-        var arg = request.method === "GET" ? request.query : request.body;
-        handler(arg, request.params, { request, response });
-    };
+// Parameter binding example
+export function nodeAdapter(hc: Handler<any, any, any> | ControllerApi<any, any, any>) {
+    if (hc as Handler<any, any, any>) {
+        let handler = hc as Handler<any, any, any>;
+        return (request, response) => {
+            var arg = request.method === "GET" ? request.query : request.body;
+            handler(arg, request.params, { request, response });
+        };
+    } else {
+        let api = hc as ControllerApi<any, any, any>;
+        return (request, response) => {
+            var arg = request.method === "GET" ? request.query : request.body;
+            var routeParam = request.params;
+            if (api.validator) {
+                let error = api.validator(arg, routeParam); // throw exception or return error
+                if (error) {
+                    throw error;
+                }
+            }
+            api.handler(arg, routeParam, { request, response });
+        };
+    }
+}
+export function koaAdapter(hc: ControllerApi<any, any, any> | Handler<any, any, any>) {
+    if (hc as ControllerApi<any, any, any>) {
+        let api = hc as ControllerApi<any, any, any>;
+        return async (ctx, next) => {
+            let request = ctx.request;
+            var arg = request.method === "GET" ? request.query : request.body;
+            var routeParam = request.params;
+            if (api.validator) {
+                let error = api.validator(arg, routeParam); // throw exception or return error
+                if (error) {
+                    throw error;
+                }
+            }
+            api.handler(arg, routeParam, { ctx, next });
+        };
+    } else {
+        let handler = hc as Handler<any, any, any>;
+        return async (ctx, next) => {
+            let request = ctx.request;
+            var arg = request.method === "GET" ? request.query : request.body;
+            var routeParam = request.params;
+            handler(arg, routeParam, { ctx, next });
+        };
+    }
 }
 
-/**
-   * @deprecated This is NOT tested and only for demo purpose
-   */
-export function wrapHandlerByCtx(handler: Handler<any, any, any>) {
-    return async (ctx) => {
-        let request = ctx.request;
-        let response = ctx.response;
-        var arg = request.method === "GET" ? request.query : request.body;
-        handler(arg, request.params, { request, response });
-    };
+// Route example
+export function registerKoaRouter(router, controller: ControllerApi<any, any, any> | Controllers) {
+    if (controller as ControllerApi<any, any, any>) {
+        let api = controller as ControllerApi<any, any, any>;
+        let callback = koaAdapter(api);
+        return router[api.method.toLowerCase()](api.url, callback);
+    } else {
+        let controllers = controller as Controllers;
+        Object.keys(controllers).forEach((key) => {
+            let controller = controllers[key];
+            Object.keys(controller).forEach((k) => {
+                let api: ControllerApi<any, any, any>;
+                if (controller[k] as Handler<any, any, any>) {
+                    api = handlerToControllerApi(k, controller[k] as Handler<any, any, any>);
+                } else if (controller[k] as ControllerApi<any, any, any>) {
+                    api = controller[k] as ControllerApi<any, any, any>;
+                }
+                let callback = koaAdapter(api);
+                router[api.method.toLowerCase()](api.url, callback);
+            });
+        });
+    }
 }
+
+// In index.js
+imprt Koa from 'koa';
+imprt Router from 'koa-router';
+import { registerKoaRouter } from "controller-api-wrapper";
+import { controllers } from "./Controllers/Api";
+
+var app = new Koa();
+var router = new Router();
+
+registerKoaRouter(router, controllers);
+
+app.use(router.routes())
+    .use(router.allowedMethods());
 ```
 
 Usage
