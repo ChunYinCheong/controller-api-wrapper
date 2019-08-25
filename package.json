@@ -1,0 +1,20 @@
+{
+  "name": "controller-api-wrapper",
+  "version": "0.0.1",
+  "description": "Generate api wrapper by existing controller",
+  "homepage": "https://github.com/dannycheong65535/controller-api-wrapper.git",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "controller",
+    "api",
+    "wrapper"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.19.0"
+  }
+}
