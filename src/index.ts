@@ -128,7 +128,7 @@ export function generateJs(route: Route, path: string = 'wrapper.generated.js') 
         });
         var config = {
             method: o.method as Method,
-            url: o.url,
+            url: url,
             params: o.method === 'get' ? data : undefined,
             data: o.method !== 'get' ? data : undefined
         };
