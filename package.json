@@ -1,6 +1,6 @@
 {
   "name": "controller-api-wrapper",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Generate api wrapper by existing controller",
   "homepage": "https://github.com/dannycheong65535/controller-api-wrapper.git",
   "main": "./lib/index.js",
