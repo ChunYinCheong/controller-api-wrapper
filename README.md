@@ -8,12 +8,38 @@ This package is still in development and not well tested.
 # controller-api-wrapper
 Generate api wrapper by existing controller
 
-# example
-Please check example/koa for more details
+# Testing example
+1. Start back-end
+```
+cd example/koa
+npm install
+npm start
+```
+2. Start front-end
+```
+cd example/react/my-app
+npm install
+npm start
+```
+3. Open the dev tool in browser then click the button, you can also check the result in Network tab
 
+
+# Modifying example
+1. If you update back-end code, then run npm run gen to generate new file.
+```
+npm run gen
+```
+2. You can now copy the generated file to you front-end project.
+
+# Full Stack Project?
+You can import the api wrapper directly and replace the js file in release. (So your client cannot access your back-end code)
+You should include these step in the build script.
+Using this method do not require to generate file everytime you made change.
+
+# example
 Project structure
 ```
-koa/
+koa/ # back-end
     api-wrapper/ # generate server-api.js for frontend
         generated/
             api-wrapper/
@@ -35,12 +61,21 @@ koa/
     .babelrc
     package-lock.json
     package.json
-    tsconfig.json  
+    tsconfig.json 
+    
+react/ # front-end
+    my-app/
+        src/
+            api-wrapper/ # generated file
+            App.css
+            App.test.tsx
+            App.tsx # example calling api
+            ...
 ```
 
 Router structure
 ```
-// src/routers/user.ts
+// koa/src/routers/user.ts
 import userController from "../controllers/UserController";
 
 const user = {
@@ -69,7 +104,7 @@ export default user;
 
 Binding example
 ```
-/// app.ts
+/// koa/src/app.ts
 import Koa from 'koa';
 import Router from 'koa-router';
 import bodyParser from 'koa-bodyparser';

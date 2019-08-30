@@ -1,6 +1,8 @@
 import { User } from "../models/user";
 declare const userController: {
-    getUser: (id: number) => User;
+    getUser: (arg: {
+        id: number;
+    }) => User;
     putUser: (arg: {
         id: number;
         user: User;

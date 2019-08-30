@@ -21,11 +21,18 @@ arr.forEach(v => {
       console.log('r: ', r);
       ctx.body = r;
     });
-  } else {
-    router.get(v.name, v.url, (ctx, next) => {
+  } else if (v.method === "post") {
+    router.post(v.name, v.url, (ctx, next) => {
       const arg = { ...ctx.request.body, ...ctx.params };
-      console.log(arg);
-      v.handler(arg);
+      console.log('arg: ', arg);
+      let r = v.handler(arg);
+      console.log('r: ', r);
+      ctx.body = r;
+    });
+  } else if (v.method === "put") {
+    router.put(v.name, v.url, (ctx, next) => {
+      const arg = { ...ctx.request.body, ...ctx.params };
+      console.log('arg: ', arg);
       let r = v.handler(arg);
       console.log('r: ', r);
       ctx.body = r;
@@ -38,4 +45,4 @@ app.use(router.routes());
 
 module.exports = app;
 
-if (!module.parent) app.listen(3000);
+if (!module.parent) app.listen(4000);

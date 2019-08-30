@@ -7,7 +7,7 @@ type RouteMap = { [s: string]: Route };
 type WithRoute = Shared & {
     route: RouteMap
 }
-type Callback<T, U, R> = (args: T, ctx: U) => R;
+type Callback<T extends { [key: string]: any }, U, R> = (args: T, ctx: U) => R;
 type WithHandler<T, U, R> = Shared & {
     method: string,
     handler: Callback<T, U, R>
@@ -113,17 +113,9 @@ export function generateJs(route: Route, path: string = 'wrapper.generated.js') 
         o.url.split("/").filter(v => v.startsWith(":")).filter((v, i, a) => a.indexOf(v) === i).forEach(v => {
             let name = v.slice(1);
             let value = "";
-            if (typeof args === "bigint" ||
-                typeof args === "number" ||
-                typeof args === "string") {
-                value = args.toString();
-            } else if (typeof args === "object") {
-                let temp = (args as any)[name];
-                value = temp === undefined || temp == null ? "" : temp.toString();
-                delete (data as any)[name];
-            } else {
-                throw "Unhandle data type";
-            }
+            let temp = (args as any)[name];
+            value = temp === undefined || temp == null ? "" : temp.toString();
+            delete (data as any)[name];
             url = url.replace(v, value)
         });
         var config = {
@@ -168,7 +160,7 @@ function generateWithHandler<T, U, R>(route: WithHandler<T, U, R>, path: string 
     let f = (args: T): any => {
         /* replace_token */
     }
-    return f.toString().replace("/* replace_token */", `send(args, ${JSON.stringify(o)});`)
+    return f.toString().replace("/* replace_token */", `return send(args, ${JSON.stringify(o)});`)
 }
 function generateWithRoute<T extends WithRoute>(route: T, path: string = '') {
     let p = path + (route.path || '');

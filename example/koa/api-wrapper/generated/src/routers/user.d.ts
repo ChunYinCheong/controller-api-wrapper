@@ -4,7 +4,9 @@ declare const user: {
         get: {
             path: string;
             method: string;
-            handler: (id: number) => import("../models/user").User;
+            handler: (arg: {
+                id: number;
+            }) => import("../models/user").User;
         };
         post: {
             path: string;
