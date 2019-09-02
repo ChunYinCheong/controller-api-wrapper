@@ -11,14 +11,14 @@
     "build:types": "tsc --emitDeclarationOnly",
     "build:js": "babel src --out-dir lib --extensions \".ts,.tsx\" --source-maps inline",
     "start": "npm run build && node lib/app",
-    "reinstall": "npm i ../../controller-api-wrapper-0.0.6.tgz",
-    "gen": "ts-node api-wrapper/generate-server-api && tsc --project api-wrapper --emitDeclarationOnly"
+    "reinstall": "npm i ../../controller-api-wrapper-0.0.7.tgz",
+    "gen": "ts-node api-wrapper/generate-server-api && tsc --project api-wrapper --emitDeclarationOnly && copyfiles api-wrapper/server-api-helper.ts api-wrapper/generated"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "controller-api-wrapper": "file:../../controller-api-wrapper-0.0.6.tgz",
+    "controller-api-wrapper": "file:../../controller-api-wrapper-0.0.7.tgz",
     "koa": "^2.8.1",
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0"
